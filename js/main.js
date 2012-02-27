@@ -1,93 +1,88 @@
-var CIRCLE = (function(x, y, freq) {
+const MIN_RADIUS = 20;
+const MAX_RADIUS = 100;
+
+var CIRCLE = (function(x, y, radius) {
 	var self = {};
 
 	minFreq = 440;
 	maxFreq = 880;
 
-	minRadius = 20
-	maxRadius = 100
+	minPulseSpeed = 1;
+	maxPulseSpeed = 2;
 
-	minPulseSpeed = 1
-	maxPulseSpeed = 2
-
-	x = x;
-	y = y;
-	freq = Math.max(Math.min(freq, maxFreq), minFreq);
-	radius = map(freq, minFreq, maxFreq, minRadius, maxRadius);
+	self.x = x;
+	self.y = y;
+	self.radius = Math.max(Math.min(radius, MAX_RADIUS), MIN_RADIUS);
+	self.freq = map(self.radius, MIN_RADIUS, MAX_RADIUS, minFreq, maxFreq);
 
 	self.pulsing = false
-	pulseAmount = 0
+	self.pulseAmount = 0
 	pulseMax = 1000;
-	pulseSpeed = map(freq, minFreq, maxFreq, minPulseSpeed, maxPulseSpeed);
-	maxGlow = radius * 5;
+	self.pulseSpeed = map(self.freq, minFreq, maxFreq, minPulseSpeed, maxPulseSpeed);
+	self.maxGlow = self.radius * 5;
 	darknessFactor = 1.5;
 
-	red = Math.round(Math.random() * 255);
-	green = Math.round(Math.random() * 255);
-	blue = Math.round(Math.random() * 255);
-
-	red = 0;
-	green = 255;
-	blue = 0;
+	self.red = Math.round(Math.random() * 255);
+	self.green = Math.round(Math.random() * 255);
+	self.blue = Math.round(Math.random() * 255);
 
 	self.inside = function(pointX, pointY) {
-		return Math.pow((pointX - x), 2) + Math.pow((pointY - y), 2) < Math.pow(radius, 2);
+		return Math.pow((pointX - self.x), 2) + Math.pow((pointY - self.y), 2) < Math.pow(self.radius, 2);
 	}
 
 	self.draw = function(ctx) {
-		ctx.fillStyle = "rgb("+red+", "+green+", "+blue+")";
+		ctx.fillStyle = "rgb("+self.red+", "+self.green+", "+self.blue+")";
 
 		ctx.beginPath();
-		ctx.arc(x, y, radius, 0 , 2 * Math.PI, false);
+		ctx.arc(self.x, self.y, self.radius, 0 , 2 * Math.PI, false);
 		ctx.fill();
 
 		if (self.pulsing) {
-			console.log("Pulse Amount: "+pulseAmount);
-			if (pulseAmount <= maxGlow) {
+			if (self.pulseAmount <= self.maxGlow) {
 				// Gradient Glow
-				var gradient = ctx.createRadialGradient(x, y, 0, x, y, pulseAmount);
-			    gradient.addColorStop(0, "rgba("+red+", "+green+", "+blue+", "+map(pulseAmount, 0, maxGlow, 0.75, 0)+")");
-			    gradient.addColorStop(0.5, "rgba("+red+", "+green+", "+blue+", "+map(pulseAmount, 0, maxGlow, 0.5, 0)+")");
-			    gradient.addColorStop(1, "rgba("+red+", "+green+", "+blue+", 0)");
+				var gradient = ctx.createRadialGradient(self.x, self.y, 0, self.x, self.y, self.pulseAmount);
+			    gradient.addColorStop(0, "rgba("+self.red+", "+self.green+", "+self.blue+", "+map(self.pulseAmount, 0, self.maxGlow, 0.75, 0)+")");
+			    gradient.addColorStop(0.5, "rgba("+self.red+", "+self.green+", "+self.blue+", "+map(self.pulseAmount, 0, self.maxGlow, 0.5, 0)+")");
+			    gradient.addColorStop(1, "rgba("+self.red+", "+self.green+", "+self.blue+", 0)");
 
 			    ctx.fillStyle = gradient;
 				ctx.beginPath();
-				ctx.arc(x, y, radius + pulseAmount, 0, 2 * Math.PI, false);
+				ctx.arc(self.x, self.y, self.radius + self.pulseAmount, 0, 2 * Math.PI, false);
 				ctx.fill();
 
 				// Darkness on Circle
-				if (pulseAmount >= radius) {
-					ctx.strokeStyle = "rgb("+Math.round(red / darknessFactor)+", "+Math.round(green / darknessFactor)+", "+Math.round(blue / darknessFactor)+")";
-					ctx.lineWidth = radius - map(pulseAmount, 0, maxGlow, 0, radius);
+				if (self.pulseAmount >= self.radius) {
+					ctx.strokeStyle = "rgb("+Math.round(self.red / darknessFactor)+", "+Math.round(self.green / darknessFactor)+", "+Math.round(self.blue / darknessFactor)+")";
+					ctx.lineWidth = self.radius - map(self.pulseAmount, 0, self.maxGlow, 0, self.radius);
 
 					ctx.beginPath();
-					ctx.arc(x, y, radius + 1 - ctx.lineWidth / 2, 0, 2 * Math.PI, false);
+					ctx.arc(self.x, self.y, self.radius + 1 - ctx.lineWidth / 2, 0, 2 * Math.PI, false);
 					ctx.stroke();
 				} else {
-					ctx.fillStyle = "rgb("+Math.round(red / darknessFactor)+", "+Math.round(green / darknessFactor)+", "+Math.round(blue / darknessFactor)+")";
+					ctx.fillStyle = "rgb("+Math.round(self.red / darknessFactor)+", "+Math.round(self.green / darknessFactor)+", "+Math.round(self.blue / darknessFactor)+")";
 
 					ctx.beginPath();
-					ctx.arc(x, y, pulseAmount, 0, 2 * Math.PI, false);
+					ctx.arc(self.x, self.y, self.pulseAmount, 0, 2 * Math.PI, false);
 					ctx.fill();
 				}
 			}
 
 			// Pulse
-			ctx.strokeStyle = "rgb("+red+", "+green+", "+blue+")";
+			ctx.strokeStyle = "rgb("+self.red+", "+self.green+", "+self.blue+")";
 			ctx.lineWidth = 10;
 
 			ctx.beginPath();
-			ctx.arc(x, y, pulseAmount, 0, 2 * Math.PI, false);
+			ctx.arc(self.x, self.y, self.pulseAmount, 0, 2 * Math.PI, false);
 			ctx.stroke();
 		}
 	}
 
 	self.pulse = function() {
 		if (self.pulsing) {
-			if (pulseAmount < pulseMax) {
-				pulseAmount += pulseSpeed;
+			if (self.pulseAmount < pulseMax) {
+				self.pulseAmount += self.pulseSpeed;
 			} else {
-				pulseAmount = 0;
+				self.pulseAmount = 0;
 				self.pulsing = false;
 			}
 		}
@@ -106,7 +101,10 @@ $(document).ready(function() {
 	resizeCanvas();
 
 	var circles = []
-	addCircle(CIRCLE(50, 50, 500));
+
+	for (var i = 0; i <= 5; i++) {
+		addCircle(createRandomCircle());
+	}
 
 	draw();
 
@@ -148,6 +146,15 @@ $(document).ready(function() {
 				circles[i].draw(ctx);
 			}
 	    });
+	}
+
+	function createRandomCircle() {
+		var radius = Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS;
+
+		var x = Math.random() * ($(document).width() - radius * 2) + radius
+		var y = Math.random() * ($(document).height() - radius * 2) + radius
+
+		return CIRCLE(x, y, radius);
 	}
 
 	function addCircle(circle) {
