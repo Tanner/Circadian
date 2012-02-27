@@ -81,7 +81,22 @@ $(document).ready(function() {
 	addCircle(CIRCLE(50, 50, 500));
 
 	draw();
-	setInterval(draw, 100);
+
+    window.requestAnimFrame = (function(){
+      return  window.requestAnimationFrame       || 
+              window.webkitRequestAnimationFrame || 
+              window.mozRequestAnimationFrame    || 
+              window.oRequestAnimationFrame      || 
+              window.msRequestAnimationFrame     || 
+              function(callback) {
+	            window.setTimeout(callback, 1000 / 60);
+	          };
+    })();
+
+    (function animloop(){
+      requestAnimFrame(animloop);
+      draw();
+    })();
 
 	$("canvas").on("touchstart mousedown", function(event) {
 		var touch = event.originalEvent.touches ? event.originalEvent.touches[0] : event;
