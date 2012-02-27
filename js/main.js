@@ -36,10 +36,18 @@ var CIRCLE = (function(x, y, freq) {
 		ctx.fill();
 
 		if (self.pulsing) {
-			console.log("Size: "+(radius + pulseAmount));
+			var gradient = ctx.createRadialGradient(x, y, 0, x, y, radius + pulseAmount);
+		    gradient.addColorStop(0, "rgb("+red+", "+green+", "+blue+")");
+		    gradient.addColorStop(0.5, "rgba("+red+", "+green+", "+blue+", 0.5)");
+		    gradient.addColorStop(1, "rgba("+red+", "+green+", "+blue+", 0)");
+
+		    ctx.fillStyle = gradient;
+			ctx.beginPath();
+			ctx.arc(x, y, radius + pulseAmount, 0, 2 * Math.PI, false);
+			ctx.fill();
 
 			ctx.strokeStyle = "rgb("+red+", "+green+", "+blue+")";
-			ctx.lineWidth = 5;
+			ctx.lineWidth = 10;
 
 			ctx.beginPath();
 			ctx.arc(x, y, radius + pulseAmount, 0, 2 * Math.PI, false);
