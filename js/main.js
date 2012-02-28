@@ -104,8 +104,28 @@ $(document).ready(function() {
 
 	var circles = []
 
-	for (var i = 0; i <= 5; i++) {
-		addCircle(createRandomCircle());
+	for (var i = 0; i <= 3; i++) {
+		var attempt = 0;
+		var acceptable = true;
+
+		do {
+			if (attempt >= 10) {
+				break;
+			}
+			
+			var circle = createRandomCircle();
+
+			for (var i = 0; i < circles.length; i++) {
+				if (Math.sqrt(Math.pow(circles[i].x - circle.x, 2) + Math.pow(circles[i].y - circle.y, 2)) <= circles[i].radius + circle.radius) {
+					acceptable = false;
+					break;
+				}
+			}
+
+			attempt++;
+		} while (!acceptable);
+
+		addCircle(circle);
 	}
 
 	draw();
