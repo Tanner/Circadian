@@ -21,7 +21,7 @@ var CIRCLE = (function(x, y, radius) {
 
 	self.maxGlow = self.radius * 5;
 
-	const pulseMax = 1000;
+	const pulseMax = Math.max($(window).height(), $(window).width());
 	const darknessFactor = 1.5;
 
 	self.red = Math.round(Math.random() * 255);
