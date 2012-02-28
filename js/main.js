@@ -4,11 +4,11 @@ const MAX_RADIUS = 100;
 var CIRCLE = (function(x, y, radius) {
 	var self = {};
 
-	minFreq = 440;
-	maxFreq = 880;
+	const minFreq = 440;
+	const maxFreq = 880;
 
-	minPulseSpeed = 1;
-	maxPulseSpeed = 2;
+	const minPulseSpeed = 2;
+	const maxPulseSpeed = 5;
 
 	self.x = x;
 	self.y = y;
@@ -17,10 +17,12 @@ var CIRCLE = (function(x, y, radius) {
 
 	self.pulsing = false
 	self.pulseAmount = 0
-	pulseMax = 1000;
-	self.pulseSpeed = map(self.freq, minFreq, maxFreq, minPulseSpeed, maxPulseSpeed);
+	self.pulseSpeed = map(self.freq, minFreq, maxFreq, maxPulseSpeed, minPulseSpeed);
+
 	self.maxGlow = self.radius * 5;
-	darknessFactor = 1.5;
+
+	const pulseMax = 1000;
+	const darknessFactor = 1.5;
 
 	self.red = Math.round(Math.random() * 255);
 	self.green = Math.round(Math.random() * 255);
