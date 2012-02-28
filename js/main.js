@@ -112,7 +112,7 @@ $(document).ready(function() {
 			if (attempt >= 10) {
 				break;
 			}
-			
+
 			var circle = createRandomCircle();
 
 			for (var i = 0; i < circles.length; i++) {
@@ -127,6 +127,10 @@ $(document).ready(function() {
 
 		addCircle(circle);
 	}
+
+	var frameCount = 0;
+	var fps = 0;
+	var lastTime = new Date();
 
 	draw();
 
@@ -159,6 +163,15 @@ $(document).ready(function() {
 	}
 
 	function draw() {
+		var nowTime = new Date();
+		var diffTime = Math.ceil((nowTime.getTime() - lastTime.getTime()));
+
+		if (diffTime >= 1000) {
+			fps = frameCount;
+			frameCount = 0.0;
+			lastTime = nowTime;
+		}
+
 		$("canvas").draw(function(ctx) {
 			ctx.fillStyle = "rgb(0, 0, 0)";
 			ctx.fillRect(0, 0, $(document).width(), $(document).height());
@@ -167,7 +180,13 @@ $(document).ready(function() {
 				circles[i].pulse();
 				circles[i].draw(ctx);
 			}
+
+			ctx.fillStyle = '#FFF';
+			ctx.font = 'bold 10px sans-serif';
+			ctx.fillText('FPS: ' + fps, 4, 12);
 	    });
+
+	    frameCount++;
 	}
 
 	function createRandomCircle() {
