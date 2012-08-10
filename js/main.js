@@ -181,6 +181,56 @@ $(document).ready(function() {
 				circles[i].draw(ctx);
 			}
 
+			for (var i = 0; i < circles.length; i++) {
+				if (circles[i].pulseAmount <= 0) {
+					continue;
+				}
+
+				for (var j = 0; j < circles.length; j++) {
+					if (i == j || circles[j].pulseAmount <= 0) {
+						continue;
+					}
+
+					var xDiff = circles[j].x - circles[i].x;
+					var yDiff = circles[j].y - circles[i].y;
+
+					var distanceFromCenters = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+
+					if (circles[i].pulseAmount + circles[j].pulseAmount <= distanceFromCenters) {
+						continue;
+					}
+
+					var k = (Math.pow(distanceFromCenters, 2) + Math.pow(circles[i].pulseAmount, 2) - Math.pow(circles[j].pulseAmount, 2)) / (2 * distanceFromCenters);
+
+					var part1A = circles[i].x + xDiff * k / distanceFromCenters;
+					var part1B = circles[i].y + yDiff * k / distanceFromCenters;
+
+					var part2A = (yDiff / distanceFromCenters) * Math.sqrt(Math.pow(circles[i].pulseAmount, 2) - Math.pow(k, 2));
+					var part2B = (xDiff / distanceFromCenters) * Math.sqrt(Math.pow(circles[i].pulseAmount, 2) - Math.pow(k, 2));
+
+					// X1 = Part 1 A + Part 2 A
+					// Y1 = Part 1 B - Part 2 B
+					// X2 = Part 1 A - Part 2 A
+					// Y2 = Part 1 B + Part 2 B
+
+					x1 = part1A + part2A;
+					y1 = part1B - part2B;
+
+					x2 = part1A - part2A;
+					y2 = part1B + part2B;
+
+					ctx.beginPath();
+					ctx.fillStyle = "white";
+					ctx.arc(x1, y1, 10, 0 , 2 * Math.PI, false);
+					ctx.fill();
+
+					ctx.beginPath();
+					ctx.fillStyle = "white";
+					ctx.arc(x2, y2, 10, 0 , 2 * Math.PI, false);
+					ctx.fill();
+				}
+			}
+
 			ctx.fillStyle = '#FFF';
 			ctx.font = 'bold 10px sans-serif';
 			ctx.fillText('FPS: ' + fps, 4, 12);
