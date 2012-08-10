@@ -104,7 +104,7 @@ $(document).ready(function() {
 
 	var circles = []
 
-	for (var i = 0; i <= 3; i++) {
+	for (var i = 0; i < 3; i++) {
 		var attempt = 0;
 		var acceptable = true;
 
